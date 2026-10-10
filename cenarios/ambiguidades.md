@@ -1,0 +1,13 @@
+# Ambiguidades e interpretações adotadas
+
+Quando a documentação não define um comportamento, a interpretação adotada fica registrada aqui.
+
+| ID | Ponto ambíguo | Interpretação adotada | Verificação |
+|---|---|---|---|
+| AMB01 | A doc não diz o que acontece com cupom vazio ou só com espaços. | Cupom vazio e cupom só com espaços (que vira vazio depois de remover os espaços, conforme CA02) deveriam se comportar como "sem cupom". Na interface, avisar que falta informar o cupom. | Cupom vazio confirmado: API devolve 200 e `cupom: null` (CT42) e a interface exibe "Informe um cupom." (EXP07); na interface, só espaços também exibe "Informe um cupom." (EXP09). Cupom só com espaços **diverge** da interpretação: o cálculo responde "Cupom inválido." e o pedido é recusado com 422 (CT50 e CT51, ver BUG-03). |
+| AMB02 | CA05 diz "apenas um cupom por vez", mas não diz o que acontece ao tentar aplicar um 2º cupom sem remover o 1º. | A interface deve bloquear ou avisar, sem somar descontos. | Confirmado (EXP01): com um cupom aplicado, o campo para digitar outro não é exibido. |
+| AMB03 | CA10 define o máximo de 5 unidades, mas não diz como a interface trata quantidade 0. | A interface não permite reduzir abaixo de 1; o cliente pode remover o item pelo controle específico. | API confirmada (CT19): 422 `QUANTIDADE_INVALIDA`. Interface confirmada (EXP08): botão de diminuir desabilitado em 1 unidade; botão Remover remove o item. Evidências: `../evidencias/EXP08_quantidade-minima-uma-unidade.png` e `../evidencias/EXP08_item-removido.png`. |
+| AMB04 | CA11 pede 2 casas decimais, mas não define o método de arredondamento. | Arredondamento comum (0,005 para cima). | Todos os preços terminam em ,90 ou ,00, então 10% nunca gera mais de 2 casas. CT27 e CT28 passaram. |
+| AMB05 | A doc não diz se o desconto é recalculado quando o carrinho muda depois de aplicar o cupom. | O desconto sempre acompanha o subtotal atual. | Confirmado (EXP02): o desconto acompanhou 1, 3 e 2 unidades. |
+| AMB06 | CA02 manda ignorar espaços no início e no fim, mas não fala de espaço no meio do código. | "BEM VINDO10" e "bem vindo10" formam outro código e devem ser inválidos. | Confirmado (CT09 e CT10): "Cupom inválido.". |
+| AMB07 | A doc não define severidade de bugs. | BUG-02 classificado inicialmente como Média (a interface bloqueia e só a chamada direta à API burla a regra) e elevado para Alta depois dos casos de quantidade absurda, que mostraram que o servidor não tem nenhum limite (ver BUG-02); BUG-01 como Alta porque o cliente paga um valor errado pela interface. | Critério adotado por mim como QA. |

@@ -1,0 +1,18 @@
+{
+  "name": "automacao",
+  "version": "1.0.0",
+  "description": "Automação Playwright (UI e API) da Verzel Store, card VZS-142",
+  "scripts": {
+    "test": "playwright test",
+    "test:ui": "playwright test tests/ui.spec.js",
+    "test:api": "playwright test tests/api.spec.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "devDependencies": {
+    "@playwright/test": "^1.63.0",
+    "@types/node": "^26.6.4"
+  }
+}
